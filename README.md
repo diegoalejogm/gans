@@ -8,7 +8,9 @@ These are trained on the [MNIST dataset](http://yann.lecun.com/exdb/mnist/), and
 - [PyTorch Notebook](https://github.com/diegoalejogm/gans/blob/master/Vanilla%20GAN%20PyTorch.ipynb)
 - [TensorFlow Notebook](https://github.com/diegoalejogm/gans/blob/master/Vanilla%20GAN%20TensorFlow.ipynb)
 
-<img src=".images/mnist_tf.png" width="300"> <img src=".images/mnist_pt.png" width="300">
+<img src=".images/vanilla_mnist_pt_raw.png" width="300"> <img src=".images/vanilla_mnist_pt.png" width="300">
+
+__MNIST-like generated images before & after training.__
 
 
 ### DCGANs
@@ -18,3 +20,7 @@ These are trained on the [CIFAR10](https://www.cs.toronto.edu/~kriz/cifar.html) 
 
 - [PyTorch CIFAR10 Notebook](https://github.com/diegoalejogm/gans/blob/master/DC-GAN%20PyTorch.ipynb)
 - [PyTorch MNIST Notebook](https://github.com/diegoalejogm/gans/blob/master/DC-GAN%20PyTorch%20(MNIST).ipynb)
+
+<img src=".images/dcgan_cifar_pt_raw.png" width="300"> <img src=".images/dcgan_cifar_pt.png" width="300">
+
+__CIFAR-like generated images before & after training.__
