@@ -8,6 +8,9 @@ These are trained on the [MNIST dataset](http://yann.lecun.com/exdb/mnist/), and
 - [PyTorch Notebook](https://github.com/diegoalejogm/gans/blob/master/Vanilla%20GAN%20PyTorch.ipynb)
 - [TensorFlow Notebook](https://github.com/diegoalejogm/gans/blob/master/Vanilla%20GAN%20TensorFlow.ipynb)
 
+<img src=".images/mnist_tf.png" width="300"> <img src=".images/mnist_pt.png" width="300">
+
+
 ### DCGANs
 Deep Convolutional Generative Adversarial Networks (DCGANs) in this repository were developed based on the original paper [Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks](https://arxiv.org/abs/1511.06434) by Radford et al.
 
