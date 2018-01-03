@@ -19,13 +19,17 @@ def display_images(images, num_images, epoch, n_batch):
         j = k%4
 
         v = np.moveaxis(images[k,:].data.cpu().numpy(), 0, -1)
+        v = np.squeeze(v)
         v_min = v.min(axis=(0, 1), keepdims=True)
         v_max = v.max(axis=(0, 1), keepdims=True)
         v = (v - v_min)/(v_max - v_min)
 
         ax[i,j].cla()
         ax[i,j].set_axis_off()
-        ax[i,j].imshow(v)
+        if len(v.shape) == 3:
+            ax[i,j].imshow(v)
+        elif len(v.shape) == 2:
+             ax[i,j].imshow(v, cmap='Greys')
     plt.axis('off')
     display.display(plt.gcf())
     
