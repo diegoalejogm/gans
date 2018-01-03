@@ -102,3 +102,9 @@ ENV/
 
 # Others
 **data/
+**tf_data/
+.DS_STORE
+
+# Floydhub Files
+.floydexpt
+.floydignore
