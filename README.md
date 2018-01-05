@@ -1,6 +1,8 @@
 #  gans: Generative Adversarial Networks
 Multiple Generative Adversarial Networks (GANs) implemented in PyTorch and Tensorflow
 
+<img src=".images/dcgan_mnist.gif" width="400"> <img src=".images/dcgan_cifar.gif" width="400">
+
 ## Vanilla GANs
 Vanilla GANs found in this project were developed based on the original paper [Generative Adversarial Networks](https://arxiv.org/abs/1406.2661) by Goodfellow et al.
 
