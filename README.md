@@ -1,6 +1,5 @@
 #  gans: Generative Adversarial Networks
 Multiple Generative Adversarial Networks (GANs) implemented in PyTorch and Tensorflow
-
 <img src=".images/dcgan_mnist.gif" width="300"> <img src=".images/dcgan_cifar.gif" width="300">
 
 ## Vanilla GANs
