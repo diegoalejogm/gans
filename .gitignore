@@ -102,6 +102,7 @@ ENV/
 
 # Others
 **data/
+**runs
 **tf_data/
 .DS_STORE
 
