@@ -39,21 +39,45 @@ class Logger:
         step = Logger._step(epoch, n_batch, num_batches)
         img_name = '{}/images{}'.format(self.comment, '')
 
-        # Make grid from image tensor
-        grid = vutils.make_grid(images, normalize=True, scale_each=True)
-        # Add images to tensorboard
-        self.writer.add_image(img_name, grid, step)
-        # Display images in notebook
-        fig = Logger._display_images(images.numpy())
-        # Save plots
-        self.save_images(fig, epoch, n_batch)
-        # Close plots
-        plt.close()
+        # Make horizontal grid from image tensor
+        horizontal_grid = vutils.make_grid(
+            images, normalize=True, scale_each=True)
+        # Make vertical grid from image tensor
+        nrows = int(np.sqrt(num_images))
+        grid = vutils.make_grid(
+            images, nrow=nrows, normalize=True, scale_each=True)
 
-    def save_images(self, fig, epoch, n_batch):
+        # Add horizontal images to tensorboard
+        self.writer.add_image(img_name, horizontal_grid, step)
+
+        # Save plots
+        self.save_torch_images(horizontal_grid, grid, epoch, n_batch)
+
+    def save_torch_images(self, horizontal_grid, grid, epoch, n_batch, plot_horizontal=True):
         out_dir = './data/images/{}'.format(self.data_subdir)
         Logger._make_dir(out_dir)
-        fig.savefig('{}/epoch_{}_batch_{}.png'.format(out_dir, epoch, n_batch))
+
+        # Plot and save horizontal
+        fig = plt.figure(figsize=(16, 16))
+        plt.imshow(np.moveaxis(horizontal_grid.numpy(), 0, -1))
+        plt.axis('off')
+        if plot_horizontal:
+            display.display(plt.gcf())
+        self._save_images(fig, epoch, n_batch, 'hori')
+        plt.close()
+
+        # Save squared
+        fig = plt.figure()
+        plt.imshow(np.moveaxis(grid.numpy(), 0, -1))
+        plt.axis('off')
+        self._save_images(fig, epoch, n_batch)
+        plt.close()
+
+    def _save_images(self, fig, epoch, n_batch, comment=''):
+        out_dir = './data/images/{}'.format(self.data_subdir)
+        Logger._make_dir(out_dir)
+        fig.savefig('{}/{}_epoch_{}_batch_{}.png'.format(out_dir,
+                                                         comment, epoch, n_batch))
 
     def display_status(self, epoch, num_epochs, n_batch, num_batches, d_error, g_error, d_pred_real, d_pred_fake):
         print('Epoch: [{}/{}], Batch Num: [{}/{}]'.format(epoch,
@@ -80,63 +104,64 @@ class Logger:
     def _step(epoch, n_batch, num_batches):
         return epoch * num_batches + n_batch
 
-    @staticmethod
-    def _process_images_for_display(images):
-        '''
-        input images are expected in format (NCHW)
-        output images are formatted to (NHWC)
-        '''
-        # If image has more than 1 channel
-        # Rescale values to range[-1,1]
-        # channels = images.size()[1]
-        # if (channels > 1):
-        #     v_min = images.min(axis=(0, 2, 3), keepdims=True)
-        #     v_max = v.max(axis=(0, 2, 3), keepdims=True)
-        #     images = (images - v_min) / (v_max - v_min)
-
-        # Reformat images as (NHWC)
-        images = np.moveaxis(images, 1, -1)
-        # Remove any single-dimensional entries
-        images = np.squeeze(images)
-
-        return images
-
-    @staticmethod
-    def _display_images(images):
-        '''
-        expects input images in format (NHWC)
-        '''
-        # Process images for display
-        images = Logger._process_images_for_display(images)
-        # Obtain num_images
-        num_images = images.shape[0]
-
-        # Create empty plot
-        size_figure_grid = int(np.sqrt(num_images))
-        fig, ax = plt.subplots(
-            size_figure_grid, size_figure_grid, figsize=(8, 8)
-        )
-
-        # Display multiple images in plot
-        for k in range(num_images):
-            # Locate image position indexes (i:vertical, j:horizontal)
-            i, j = k // 4, k % 4
-            # Obtain current image
-            img = images[k, :]
-            # Remove axis lines
-            ax[i, j].cla()
-            ax[i, j].set_axis_off()
-
-            if len(img.shape) == 3:
-                ax[i, j].imshow(img)
-
-            elif len(img.shape) == 2:
-                ax[i, j].imshow(img, cmap='Greys')
-
-        plt.axis('off')
-        display.display(plt.gcf())
-
-        return fig
+    # @staticmethod
+    # def _process_images_for_display(images):
+    #     '''
+    #     input images are expected in format (NCHW)
+    #     output images are formatted to (NHWC)
+    #     '''
+    #
+    #     n_channels = images.shape[1]
+    #     # If image has more than 1 channel
+    #     # Rescale values to range[-1,1]
+    #     if (n_channels > 1):
+    #         v_min = images.min(axis=(1, 2, 3), keepdims=True)
+    #         v_max = images.max(axis=(1, 2, 3), keepdims=True)
+    #         images = (images - v_min) / (v_max - v_min)
+    #
+    #     # Reformat images as (NHWC)
+    #     images = np.moveaxis(images, 1, -1)
+    #     # Remove any single-dimensional entries
+    #     images = np.squeeze(images)
+    #
+    #     return images
+    #
+    # @staticmethod
+    # def _display_images(images):
+    #     '''
+    #     expects numpy input images in format (NHWC)
+    #     '''
+    #     # Process images for display
+    #     images = Logger._process_images_for_display(images)
+    #     # Obtain num_images
+    #     num_images = images.shape[0]
+    #
+    #     # Create empty plot
+    #     size_figure_grid = int(np.sqrt(num_images))
+    #     fig, ax = plt.subplots(
+    #         size_figure_grid, size_figure_grid, figsize=(7, 7)
+    #     )
+    #
+    #     # Display multiple images in plot
+    #     for k in range(num_images):
+    #         # Locate image position indexes (i:vertical, j:horizontal)
+    #         i, j = k // 4, k % 4
+    #         # Obtain current image
+    #         img = images[k, :]
+    #         # Remove axis lines
+    #         ax[i, j].cla()
+    #         ax[i, j].set_axis_off()
+    #
+    #         if len(img.shape) == 3:
+    #             ax[i, j].imshow(img)
+    #
+    #         elif len(img.shape) == 2:
+    #             ax[i, j].imshow(img, cmap='Greys')
+    #
+    #     plt.axis('off')
+    #     display.display(plt.gcf())
+    #
+    #     return fig
 
     @staticmethod
     def _make_dir(directory):
