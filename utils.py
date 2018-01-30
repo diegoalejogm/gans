@@ -32,10 +32,17 @@ class Logger:
         self.writer.add_scalar(
             '{}/G_error'.format(self.comment), G_error, step)
 
-    def log_images(self, images, num_images, epoch, n_batch, num_batches):
+    def log_images(self, images, num_images, epoch, n_batch, num_batches, format='NCHW'):
         '''
         input images are expected in format (NCHW)
         '''
+        if type(images) == np.ndarray:
+            images = torch.from_numpy(images)
+        
+        if format=='NHWC':
+            images = images.transpose(1,3)
+        
+
         step = Logger._step(epoch, n_batch, num_batches)
         img_name = '{}/images{}'.format(self.comment, '')
 
@@ -80,12 +87,25 @@ class Logger:
                                                          comment, epoch, n_batch))
 
     def display_status(self, epoch, num_epochs, n_batch, num_batches, d_error, g_error, d_pred_real, d_pred_fake):
-        print('Epoch: [{}/{}], Batch Num: [{}/{}]'.format(epoch,
-                                                          num_epochs, n_batch, num_batches))
-        print('Discriminator Loss: {:.4f}, Generator Loss: {:.4f}'.format(
-            d_error.data[0], g_error.data[0]))
-        print('D(x): {:.4f}, D(G(z)): {:.4f}'.format(
-            d_pred_real.data.mean(), d_pred_fake.data.mean()))
+        
+        var_class = torch.autograd.variable.Variable
+        if type(d_error)==var_class:
+            d_error = d_error.data.cpu().numpy()[0]
+        if type(g_error)==var_class:
+            g_error = g_error.data.cpu().numpy()[0]
+        if type(d_pred_real)==var_class:
+            d_pred_real = d_pred_real.data
+        if type(d_pred_fake)==var_class:
+            d_pred_fake = d_pred_fake.data
+        
+        
+        print('Epoch: [{}/{}], Batch Num: [{}/{}]'.format(
+            epoch,num_epochs, n_batch, num_batches)
+             )
+        
+        print(d_error, g_error)
+        print('Discriminator Loss: {:.4f}, Generator Loss: {:.4f}'.format(d_error, g_error))
+        print('D(x): {:.4f}, D(G(z)): {:.4f}'.format(d_pred_real.mean(), d_pred_fake.mean()))
 
     def save_models(self, generator, discriminator, epoch):
         out_dir = './data/models/{}'.format(self.data_subdir)
@@ -103,65 +123,6 @@ class Logger:
     @staticmethod
     def _step(epoch, n_batch, num_batches):
         return epoch * num_batches + n_batch
-
-    # @staticmethod
-    # def _process_images_for_display(images):
-    #     '''
-    #     input images are expected in format (NCHW)
-    #     output images are formatted to (NHWC)
-    #     '''
-    #
-    #     n_channels = images.shape[1]
-    #     # If image has more than 1 channel
-    #     # Rescale values to range[-1,1]
-    #     if (n_channels > 1):
-    #         v_min = images.min(axis=(1, 2, 3), keepdims=True)
-    #         v_max = images.max(axis=(1, 2, 3), keepdims=True)
-    #         images = (images - v_min) / (v_max - v_min)
-    #
-    #     # Reformat images as (NHWC)
-    #     images = np.moveaxis(images, 1, -1)
-    #     # Remove any single-dimensional entries
-    #     images = np.squeeze(images)
-    #
-    #     return images
-    #
-    # @staticmethod
-    # def _display_images(images):
-    #     '''
-    #     expects numpy input images in format (NHWC)
-    #     '''
-    #     # Process images for display
-    #     images = Logger._process_images_for_display(images)
-    #     # Obtain num_images
-    #     num_images = images.shape[0]
-    #
-    #     # Create empty plot
-    #     size_figure_grid = int(np.sqrt(num_images))
-    #     fig, ax = plt.subplots(
-    #         size_figure_grid, size_figure_grid, figsize=(7, 7)
-    #     )
-    #
-    #     # Display multiple images in plot
-    #     for k in range(num_images):
-    #         # Locate image position indexes (i:vertical, j:horizontal)
-    #         i, j = k // 4, k % 4
-    #         # Obtain current image
-    #         img = images[k, :]
-    #         # Remove axis lines
-    #         ax[i, j].cla()
-    #         ax[i, j].set_axis_off()
-    #
-    #         if len(img.shape) == 3:
-    #             ax[i, j].imshow(img)
-    #
-    #         elif len(img.shape) == 2:
-    #             ax[i, j].imshow(img, cmap='Greys')
-    #
-    #     plt.axis('off')
-    #     display.display(plt.gcf())
-    #
-    #     return fig
 
     @staticmethod
     def _make_dir(directory):
