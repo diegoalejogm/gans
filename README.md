@@ -19,6 +19,7 @@ Deep Convolutional Generative Adversarial Networks (DCGANs) in this repository w
 
 These are trained on the [CIFAR10](https://www.cs.toronto.edu/~kriz/cifar.html) and the [MNIST](http://yann.lecun.com/exdb/mnist/) datasets. They use 3 dimensional representations for images (length x height x colors) directly for training.
 
+- [TensorFlow CIFAR10 Notebook](https://github.com/diegoalejogm/gans/blob/master/DC-GAN%20TensorFlow.ipynb)
 - [PyTorch CIFAR10 Notebook](https://github.com/diegoalejogm/gans/blob/master/DC-GAN%20PyTorch.ipynb)
 - [PyTorch MNIST Notebook](https://github.com/diegoalejogm/gans/blob/master/DC-GAN%20PyTorch%20(MNIST).ipynb)
 
