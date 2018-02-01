@@ -24,15 +24,21 @@ class Logger:
         # TensorBoard
         self.writer = SummaryWriter(comment=self.comment)
 
-    def log(self, D_error, G_error, epoch, n_batch, num_batches):
+    def log(self, d_error, g_error, epoch, n_batch, num_batches):
+
+        var_class = torch.autograd.variable.Variable
+        if type(d_error)==var_class:
+            d_error = d_error.data.cpu().numpy()
+        if type(g_error)==var_class:
+            g_error = g_error.data.cpu().numpy()
 
         step = Logger._step(epoch, n_batch, num_batches)
         self.writer.add_scalar(
-            '{}/D_error'.format(self.comment), D_error, step)
+            '{}/D_error'.format(self.comment), d_error, step)
         self.writer.add_scalar(
-            '{}/G_error'.format(self.comment), G_error, step)
+            '{}/G_error'.format(self.comment), g_error, step)
 
-    def log_images(self, images, num_images, epoch, n_batch, num_batches, format='NCHW'):
+    def log_images(self, images, num_images, epoch, n_batch, num_batches, format='NCHW', normalize=True):
         '''
         input images are expected in format (NCHW)
         '''
@@ -48,7 +54,7 @@ class Logger:
 
         # Make horizontal grid from image tensor
         horizontal_grid = vutils.make_grid(
-            images, normalize=True, scale_each=True)
+            images, normalize=normalize, scale_each=True)
         # Make vertical grid from image tensor
         nrows = int(np.sqrt(num_images))
         grid = vutils.make_grid(
