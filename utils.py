@@ -96,7 +96,6 @@ class Logger:
         
         # var_class = torch.autograd.variable.Variable
         if isinstance(d_error, torch.autograd.Variable):
-            print(d_error.data.cpu().numpy())
             d_error = d_error.data.cpu().numpy()
         if isinstance(g_error, torch.autograd.Variable):
             g_error = g_error.data.cpu().numpy()
