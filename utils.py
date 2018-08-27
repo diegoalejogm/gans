@@ -26,10 +26,10 @@ class Logger:
 
     def log(self, d_error, g_error, epoch, n_batch, num_batches):
 
-        var_class = torch.autograd.variable.Variable
-        if type(d_error)==var_class:
+        # var_class = torch.autograd.variable.Variable
+        if isinstance(d_error, torch.autograd.Variable):
             d_error = d_error.data.cpu().numpy()
-        if type(g_error)==var_class:
+        if isinstance(g_error, torch.autograd.Variable):
             g_error = g_error.data.cpu().numpy()
 
         step = Logger._step(epoch, n_batch, num_batches)
@@ -94,14 +94,15 @@ class Logger:
 
     def display_status(self, epoch, num_epochs, n_batch, num_batches, d_error, g_error, d_pred_real, d_pred_fake):
         
-        var_class = torch.autograd.variable.Variable
-        if type(d_error)==var_class:
-            d_error = d_error.data.cpu().numpy()[0]
-        if type(g_error)==var_class:
-            g_error = g_error.data.cpu().numpy()[0]
-        if type(d_pred_real)==var_class:
+        # var_class = torch.autograd.variable.Variable
+        if isinstance(d_error, torch.autograd.Variable):
+            print(d_error.data.cpu().numpy())
+            d_error = d_error.data.cpu().numpy()
+        if isinstance(g_error, torch.autograd.Variable):
+            g_error = g_error.data.cpu().numpy()
+        if isinstance(d_pred_real, torch.autograd.Variable):
             d_pred_real = d_pred_real.data
-        if type(d_pred_fake)==var_class:
+        if isinstance(d_pred_fake, torch.autograd.Variable):
             d_pred_fake = d_pred_fake.data
         
         
