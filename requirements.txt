@@ -1,5 +1,5 @@
 torch==0.3.0post4
-tensorflow==1.0.0a6
+tensorflow==1.15.2
 tensorboardX==0.8
 numpy==1.13.3
 matplotlib==2.1.1
