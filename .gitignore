@@ -110,3 +110,9 @@ ENV/
 # Floydhub Files
 .floydexpt
 .floydignore
+
+# Environments
+.env
+.venv
+env/
+venv/
